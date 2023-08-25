@@ -22,6 +22,7 @@ public class CMD extends javax.swing.JFrame {
     public CMD(CMDLogic cmdlogic) {
         initComponents();
         this.cmdlogic = cmdlogic;
+        StringBuilder string = null;
         textareacmd.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -32,57 +33,64 @@ public class CMD extends javax.swing.JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     try {
                         String lastLine = getLastLine(textareacmd.getText());
-                        String comando = getPenultimateWord(textareacmd.getText());
-                        String ultima = getUltimateWord(textareacmd.getText());
-                        System.out.println("Ultima linea ingresada: " + lastLine);
-                        System.out.println("Comando ingresado: " + comando);
-                        System.out.println("Ultima palabra ingresada: " + ultima);
+                        while (!lastLine.equals("salir")) {
+                            
+                            String comando = getPenultimateWord(textareacmd.getText());
+                            String ultima = getUltimateWord(textareacmd.getText());
+                            System.out.println("Ultima linea ingresada: " + lastLine);
+                            System.out.println("Comando ingresado: " + comando);
+                            System.out.println("Ultima palabra ingresada: " + ultima);
 
-                        switch (comando) {
-                            case "cd":
-                                cmdlogic.setFile(ultima);
-                                System.out.println("Archivo seteado en " + ultima);
+                            switch (comando) {
+                                case "cd":
+                                    cmdlogic.setFile(ultima);
+                                    System.out.println("Archivo seteado en " + ultima+"\n");
 
-                                break;
+                                    break;
 
-                            case "mkdir":
+                                case "mkdir":
 
-                                cmdlogic.setFile(ultima);
-                                System.out.println("Archivo seteado en " + ultima);
-                                cmdlogic.crearFolder();
-                                System.out.println("Folder creado.");
+                                    cmdlogic.setFile(ultima);
+                                    string.append("Archivo seteado en " + ultima+"\n");
+                                    cmdlogic.crearFolder();
+                                    string.append("Folder creado.\n");
 
-                                break;
+                                    break;
 
-                            case "mfile":
-                                cmdlogic.setFile(ultima);
-                                System.out.println("Archivo seteado en " + ultima);
-                                cmdlogic.crearFile();
-                                break;
+                                case "mfile":
+                                    cmdlogic.setFile(ultima);
+                                    string.append("Archivo seteado en " + ultima+"\n");
+                                    cmdlogic.crearFile();
+                                    string.append("archivo creado\n");
+                                    break;
 
-                            case "rm":
-                                cmdlogic.eliminarArchivo(ultima);
-                                System.out.println("Carpeta o archivo eliminado.");
-                                break;
+                                case "rm":
+                                    cmdlogic.eliminarArchivo(ultima);
+                                    string.append("Carpeta o archivo eliminado.\n");
+                                    break;
 
-                            case "...":
-                                cmdlogic.regresar();
-                                System.out.println("Has regresado.");
-                                break;
-                                
-                            case "dir":
-                                cmdlogic.Dir();
-                                
-                                break;
-                                
-                            case "date":
-                                cmdlogic.toStringFecha();
-                                break;
+                                case "...":
+                                    cmdlogic.regresar();
+                                    string.append("Has regresado.\n");
+                                    break;
+
+                                case "dir":
+                                    cmdlogic.Dir();
+                                    string.append(cmdlogic.info);
+                                    break;
+
+                                case "date":
+                                    string.append(cmdlogic.toStringFecha()+"\n");
+                                    break;
+                            }
+                            textareacmd.setText(string.toString());
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(CMD.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
                 }
+
             }
 
             @Override
