@@ -112,7 +112,7 @@ public class CMD extends javax.swing.JFrame {
                                         string.append(cmdlogic.read() + "\n");
 
                                     } else {
-                                        string.append("\n"+cmdlogic.readFile(ultima)+"\n");
+                                        string.append(cmdlogic.readFile(ultima)+"\n");
                                     }
                                     break;
 
