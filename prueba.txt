@@ -1,0 +1,1 @@
+[Version 10.0.19042.985] mfile prueba archivo creado wr holaleer prueba leer prueba is not recognized as an internal or external commmand, operable program or batch file. rd pruebamfile prueba.txt archivo creado wr prueba.txt hola wr prueba.txt hola is not recognized as an internal or external commmand, operable program or batch file. wr hola

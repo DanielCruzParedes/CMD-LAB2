@@ -33,27 +33,28 @@ public class CMDLogic {
     }
 
     //Rm
-    void eliminarArchivo(String direccion) {
+    public void eliminarArchivo(String direccion) {
         setFile(direccion);
-        if(currentFolder.isDirectory()){
-            File[] contenido = currentFolder.listFiles();
-            if(contenido!=null){
-                for(File ar: contenido){
+        File[] contenido = currentFolder.listFiles();
+        if (currentFolder.isDirectory()) {
+
+            if (contenido != null) {
+                for (File ar : contenido) {
                     eliminarArchivo(ar.getAbsolutePath());
                 }
-                
             }
-            currentFolder.delete();
-            
         }
-        if(currentFolder.isFile()){
-            currentFolder.delete();
+
+        while (!currentFolder.delete()) {
+            System.out.println("No se pudo eliminar: " + currentFolder.getAbsolutePath());
+            currentFolder = regresar();
+            contenido = currentFolder.listFiles();
         }
     }
-        
+
     //<...>
     File regresar() {
-        
+
         previousFile = currentFolder.getParentFile();
         setFile(previousFile.getAbsolutePath());
         return previousFile;
@@ -75,15 +76,15 @@ public class CMDLogic {
     public void Dir() {
         if (currentFolder.isDirectory()) {
             //imprime el nombre del folder actual
-            info="Folder Actual: " + currentFolder.getName()+"\n";
+            info = "Folder Actual: " + currentFolder.getName() + "\n";
             //Mostrar contenido
             for (File child : currentFolder.listFiles()) {
                 // Si es Directory se indica
                 if (child.isDirectory()) {
-                    info=info+"<DIR>\t";
+                    info = info + "<DIR>\t";
                 }
                 //Imprime el nombre del archivo o folder
-                info=info+child.getName();
+                info = info + child.getName();
             }
 
         }
@@ -125,23 +126,23 @@ public class CMDLogic {
     }
 
     public String readFile(String direccion) throws FileNotFoundException {
+        StringBuilder contenido = new StringBuilder();
         setFile(direccion);
         if (exists()) {
             try {
                 FileReader lector = new FileReader(currentFolder);
-                StringBuilder contenido = null;
 
                 int character;
                 while ((character = lector.read()) != -1) {
+                    
                     contenido.append((char) character);
                 }
                 lector.close();
-                return contenido.toString();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return "";
+        return contenido.toString();
     }
-
-}
+    
+    }

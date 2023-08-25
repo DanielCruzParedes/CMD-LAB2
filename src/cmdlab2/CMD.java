@@ -22,7 +22,10 @@ public class CMD extends javax.swing.JFrame {
     public CMD(CMDLogic cmdlogic) {
         initComponents();
         this.cmdlogic = cmdlogic;
-        StringBuilder string = null;
+        StringBuilder string = new StringBuilder();
+        string.append("Microsoft Windows [Version 10.0.19042.985]\n");
+        textareacmd.setText(string.toString());
+
         textareacmd.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -33,58 +36,95 @@ public class CMD extends javax.swing.JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     try {
                         String lastLine = getLastLine(textareacmd.getText());
-                        while (!lastLine.equals("salir")) {
-                            
-                            String comando = getPenultimateWord(textareacmd.getText());
-                            String ultima = getUltimateWord(textareacmd.getText());
-                            System.out.println("Ultima linea ingresada: " + lastLine);
-                            System.out.println("Comando ingresado: " + comando);
-                            System.out.println("Ultima palabra ingresada: " + ultima);
+                        String comando = getPenultimateWord(textareacmd.getText());
+                        String ultima = getUltimateWord(textareacmd.getText());
+                        String ultimasPalabras = getWordsExceptFirst(textareacmd.getText());
+                        System.out.println("Ultima linea ingresada: " + lastLine);
+                        System.out.println("Comando ingresado: " + comando);
+                        System.out.println("Ultima palabra ingresada: " + ultima);
 
+                        if (lastLine.equals("date") || lastLine.equals("time") || lastLine.equals("...") || lastLine.equals("dir")) {
+                            switch (lastLine) {
+                                case "...":
+                                    string.append(lastLine + "\n");
+                                    cmdlogic.regresar();
+                                    string.append("Has regresado.\n");
+                                    break;
+
+                                case "dir":
+                                    string.append(lastLine + "\n");
+                                    cmdlogic.Dir();
+                                    string.append(cmdlogic.info + "\n");
+                                    break;
+
+                                case "date":
+                                    string.append(lastLine + "\n");
+                                    string.append(cmdlogic.toStringFecha() + "\n");
+                                    break;
+
+                                case "time":
+                                    string.append(lastLine);
+                                    string.append(cmdlogic.toStringTiempo());
+                                    break;
+
+                                default:
+                                    string.append(lastLine + "\n");
+                                    string.append(lastLine + " is not recognized as an internal or external commmand, \n operable program or batch file. \n");
+                                    break;
+                            }
+                        } else {
                             switch (comando) {
                                 case "cd":
+                                    string.append(lastLine + "\n");
                                     cmdlogic.setFile(ultima);
-                                    System.out.println("Archivo seteado en " + ultima+"\n");
 
                                     break;
 
                                 case "mkdir":
-
+                                    string.append(lastLine + "\n");
                                     cmdlogic.setFile(ultima);
-                                    string.append("Archivo seteado en " + ultima+"\n");
                                     cmdlogic.crearFolder();
                                     string.append("Folder creado.\n");
 
                                     break;
 
                                 case "mfile":
+                                    string.append(lastLine + "\n");
                                     cmdlogic.setFile(ultima);
-                                    string.append("Archivo seteado en " + ultima+"\n");
                                     cmdlogic.crearFile();
-                                    string.append("archivo creado\n");
+                                    string.append("Archivo creado\n");
                                     break;
 
                                 case "rm":
+                                    string.append(lastLine + "\n");
                                     cmdlogic.eliminarArchivo(ultima);
                                     string.append("Carpeta o archivo eliminado.\n");
                                     break;
 
-                                case "...":
-                                    cmdlogic.regresar();
-                                    string.append("Has regresado.\n");
+                                case "wr":
+                                    string.append(lastLine+"\n");
+                                    cmdlogic.write(ultimasPalabras);
                                     break;
 
-                                case "dir":
-                                    cmdlogic.Dir();
-                                    string.append(cmdlogic.info);
+                                case "rd":
+                                    string.append(lastLine+"\n");
+                                    if (ultima.equals("rd")) {
+                                        string.append(cmdlogic.read() + "\n");
+
+                                    } else {
+                                        string.append("\n"+cmdlogic.readFile(ultima)+"\n");
+                                    }
                                     break;
 
-                                case "date":
-                                    string.append(cmdlogic.toStringFecha()+"\n");
+                                default:
+                                    string.append(lastLine + "\n");
+                                    string.append(lastLine + " is not recognized as an internal or external commmand, \n operable program or batch file. \n");
                                     break;
+
                             }
-                            textareacmd.setText(string.toString());
                         }
+
+                        textareacmd.setText(string.toString());
                     } catch (IOException ex) {
                         Logger.getLogger(CMD.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -111,6 +151,23 @@ public class CMD extends javax.swing.JFrame {
         String[] comando = text.split("\\s+");
         if (comando.length > 1) {
             return comando[comando.length - 2];
+        }
+        return "";
+    }
+
+    private static String getWordsExceptFirst(String text) {
+        String[] words = text.split("\\s+");
+        if (words.length > 1) {
+            StringBuilder result = new StringBuilder();
+
+            for (int i = 2; i < words.length; i++) {
+                result.append(words[i]);
+                if (i < words.length - 1) {
+                    result.append(" ");
+                }
+            }
+
+            return result.toString();
         }
         return "";
     }
