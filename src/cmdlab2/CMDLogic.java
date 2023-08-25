@@ -32,10 +32,18 @@ public class CMDLogic {
     }
 
     //Rm
-    boolean eliminarArchivo() {
-        return currentFolder.delete();
+    void eliminarArchivo(String direccion) {
+        setFile(direccion);
+        if(currentFolder.isDirectory()){
+            File[] contenido = currentFolder.listFiles();
+            if(contenido!=null){
+                for(File ar: contenido){
+                    eliminarArchivo(ar.getAbsolutePath());
+                }
+            }
+        }
     }
-
+        
     //<...>
     File regresar() {
         File previousFile = currentFolder.getParentFile();
