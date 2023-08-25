@@ -14,7 +14,8 @@ public class CMDLogic {
 
     public File currentFolder = null;
 
-    public File previousFile = currentFolder.getParentFile();
+    public File previousFile;
+    public String info;
 
     //Mfile
     boolean crearFile() throws IOException {
@@ -40,14 +41,22 @@ public class CMDLogic {
                 for(File ar: contenido){
                     eliminarArchivo(ar.getAbsolutePath());
                 }
+                
             }
+            currentFolder.delete();
+            
+        }
+        if(currentFolder.isFile()){
+            currentFolder.delete();
         }
     }
         
     //<...>
     File regresar() {
-        File previousFile = currentFolder.getParentFile();
-        return currentFolder = previousFile;
+        
+        previousFile = currentFolder.getParentFile();
+        setFile(previousFile.getAbsolutePath());
+        return previousFile;
     }
 
     Date date = new Date();
@@ -66,16 +75,15 @@ public class CMDLogic {
     public void Dir() {
         if (currentFolder.isDirectory()) {
             //imprime el nombre del folder actual
-            System.out.println("Folder Actual: " + currentFolder.getName());
-
+            info="Folder Actual: " + currentFolder.getName()+"\n";
             //Mostrar contenido
             for (File child : currentFolder.listFiles()) {
                 // Si es Directory se indica
                 if (child.isDirectory()) {
-                    System.out.print("<DIR>\t");
+                    info=info+"<DIR>\t";
                 }
                 //Imprime el nombre del archivo o folder
-                System.out.println(child.getName());
+                info=info+child.getName();
             }
 
         }

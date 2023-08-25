@@ -6,6 +6,9 @@ package cmdlab2;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -13,10 +16,12 @@ import java.awt.event.KeyListener;
  */
 public class CMD extends javax.swing.JFrame {
 
-   static CMDLogic cmdlogic;
+    static CMDLogic cmdlogic = new CMDLogic();
+    static String[] lines;
+
     public CMD(CMDLogic cmdlogic) {
         initComponents();
-        this.cmdlogic=cmdlogic;
+        this.cmdlogic = cmdlogic;
         textareacmd.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -25,15 +30,58 @@ public class CMD extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String lastLine = getLastLine(textareacmd.getText());
-                    System.out.println("Ultima linea ingresada: " + lastLine);
-                    
-                    switch (lastLine) {
-                        case "Cd" :
-                            
-                            break;
-                    }
+                    try {
+                        String lastLine = getLastLine(textareacmd.getText());
+                        String comando = getPenultimateWord(textareacmd.getText());
+                        String ultima = getUltimateWord(textareacmd.getText());
+                        System.out.println("Ultima linea ingresada: " + lastLine);
+                        System.out.println("Comando ingresado: " + comando);
+                        System.out.println("Ultima palabra ingresada: " + ultima);
 
+                        switch (comando) {
+                            case "cd":
+                                cmdlogic.setFile(ultima);
+                                System.out.println("Archivo seteado en " + ultima);
+
+                                break;
+
+                            case "mkdir":
+
+                                cmdlogic.setFile(ultima);
+                                System.out.println("Archivo seteado en " + ultima);
+                                cmdlogic.crearFolder();
+                                System.out.println("Folder creado.");
+
+                                break;
+
+                            case "mfile":
+                                cmdlogic.setFile(ultima);
+                                System.out.println("Archivo seteado en " + ultima);
+                                cmdlogic.crearFile();
+                                break;
+
+                            case "rm":
+                                cmdlogic.eliminarArchivo(ultima);
+                                System.out.println("Carpeta o archivo eliminado.");
+                                break;
+
+                            case "...":
+                                cmdlogic.regresar();
+                                System.out.println("Has regresado.");
+                                break;
+                                
+                            case "dir":
+                                cmdlogic.Dir();
+                                
+                                break;
+                                
+                            case "date":
+                                cmdlogic.toStringFecha();
+                                break;
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(CMD.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
 
@@ -42,15 +90,31 @@ public class CMD extends javax.swing.JFrame {
             }
         });
     }
-    
-     private static String getLastLine(String text) {
-        String[] lines = text.split("\n");
+
+    private static String getLastLine(String text) {
+        lines = text.split("\n");
         if (lines.length > 0) {
             return lines[lines.length - 1];
         }
         return "";
     }
-    
+
+    private static String getPenultimateWord(String text) {
+        String[] comando = text.split("\\s+");
+        if (comando.length > 1) {
+            return comando[comando.length - 2];
+        }
+        return "";
+    }
+
+    private static String getUltimateWord(String text) {
+        String[] comando = text.split("\\s+");
+        if (comando.length > 1) {
+            return comando[comando.length - 1];
+        }
+        return "";
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -66,26 +130,24 @@ public class CMD extends javax.swing.JFrame {
 
         textareacmd.setBackground(new java.awt.Color(0, 0, 0));
         textareacmd.setColumns(20);
-        textareacmd.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        textareacmd.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
         textareacmd.setForeground(new java.awt.Color(255, 255, 255));
         textareacmd.setRows(5);
-        textareacmd.setText("Microsoft Windows [Version 2023.8.25]");
+        textareacmd.setText("\n");
         jScrollPane1.setViewportView(textareacmd);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 994, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
